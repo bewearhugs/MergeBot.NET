@@ -1,49 +1,32 @@
-# SysBot.NET
-![License](https://img.shields.io/badge/License-AGPLv3-blue.svg)
+![Stufful](https://cdn.discordapp.com/attachments/733453918498979944/964983965452738620/stufful.gif)
+# StuffulBot Merge is a Gen 7/8 Sysbot for Nintendo Switch
 
-## Support Discord:
+**LGPE Sysbot done by SantaCrab420 - Merged by bewearhugs**
 
-For support on setting up your own instance of SysBot.NET, feel free to join the discord! (Beware of un-official discords who claim to be official)
+* [SantaCrab's discord](https://www.piplup.net)
+* [Bewearhug's discord](https://tiny.cc/bwhd)
 
-[<img src="https://canary.discordapp.com/api/guilds/401014193211441153/widget.png?style=banner2">](https://discord.gg/tDMvSRv)
+## About
+StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Games
 
-[sys-botbase](https://github.com/olliz0r/sys-botbase) client for remote control automation of Nintendo Switch consoles.
+## Credits
+* PKHeX Crew etc. for Sysbot.NET
+* Santacrab for getting LGPE working
+* Friends who helped steer me in the right directions ;)
 
-## SysBot.Base:
-- Base logic library to be built upon in game-specific projects.
-- Contains a synchronous and asynchronous Bot connection class to interact with sys-botbase.
+## Requirements
+* -[Hacked switch with CFW](https://nh-server.github.io/switch-guide/user_guide/getting_started/)
+* -[SysBot Base](https://github.com/olliz0r/sys-botbase)
+* -[ldn_mitm](https://github.com/spacemeowx2/ldn_mitm) *if using SWSH*
 
-## SysBot.Tests:
-- Unit Tests for ensuring logic behaves as intended :)
+## How to Run
+1. Boot your Switch (assuming you are in Sys CFW mode)
+2. Start the game of your choice
+3. Edit your config for game mode and reboot exe if neccessary...  Mode:  1=LGPE 2=SWSH 3=BDSP 4=LA
+5. Edit Hub, Add Bot, and hit Start All
 
-# Example Implementations
+## How to build
+Download source code or git clone, open in VS, open Sysbot solution. Select Sysbot.Winforms as startup project and hit build (*x64 and Release*).
 
-The driving force to develop this project is automated bots for Nintendo Switch Pokémon games. An example implementation is provided in this repo to demonstrate interesting tasks this framework is capable of performing. Refer to the [Wiki](https://github.com/kwsch/SysBot.NET/wiki) for more details on the supported Pokémon features.
-
-## SysBot.Pokemon:
-- Class library using SysBot.Base to contain logic related to creating & running Sword/Shield bots.
-
-## SysBot.Pokemon.WinForms:
-- Simple GUI Launcher for adding, starting, and stopping Pokémon bots (as described above).
-- Configuration of program settings is performed in-app and is saved as a local json file.
-
-## SysBot.Pokemon.Discord:
-- Discord interface for remotely interacting with the WinForms GUI.
-- Provide a discord login token and the Roles that are allowed to interact with your bots.
-- Commands are provided to manage & join the distribution queue.
-
-## SysBot.Pokemon.Twitch:
-- Twitch.tv interface for remotely announcing when the distribution starts.
-- Provide a Twitch login token, username, and channel for login.
-
-## SysBot.Pokemon.YouTube:
-- YouTube.com interface for remotely announcing when the distribution starts.
-- Provide a YouTube login ClientID, ClientSecret, and ChannelID for login.
-
-Uses [Discord.Net](https://github.com/discord-net/Discord.Net) , [TwitchLib](https://github.com/TwitchLib/TwitchLib) and [StreamingClientLibary](https://github.com/SaviorXTanren/StreamingClientLibrary) as a dependency via Nuget.
-
-## Other Dependencies
-Pokémon API logic is provided by [PKHeX](https://github.com/kwsch/PKHeX/), and template generation is provided by [AutoMod](https://github.com/architdate/PKHeX-Plugins/).
-
-# License
-Refer to the `License.md` for details regarding licensing.
+## Additional thanks
+Thanks to everyone from PKHeX for their amazing library, and Archit and everyone for ALM plugin!
