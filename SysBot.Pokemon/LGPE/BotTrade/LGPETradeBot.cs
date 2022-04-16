@@ -407,6 +407,11 @@ namespace SysBot.Pokemon
                     while (await LGIsInTrade(token))
                         await Click(A, 1000, token);
 
+                    ///assume trade success send file thing
+
+                    var returnpk = await LGReadPokemon(BoxSlot1, token);
+                    poke.TradeFinished(this, returnpk);
+
                     Log("Trade should be completed, exiting box");
                     passes = 0;
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
@@ -458,18 +463,11 @@ namespace SysBot.Pokemon
                     await Click(B, 1000, token);
                     await Click(B, 1000, token);
                     Log("done spamming b");
-
-                    return PokeTradeResult.Success;
-
                     Log("Nothing to do, waiting for next trade...");
+                    return PokeTradeResult.Success;
                 }
 
-
-
-
-
                 /// DISTRIBUTION TRADE
-
                 while (Hub.Config.Distribution.DistributeWhileIdle)
                 {
                     Log("Starting Trade Type: Distribution");

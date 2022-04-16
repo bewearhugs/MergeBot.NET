@@ -9,7 +9,7 @@
     <Authors>Kaphotics</Authors>
     <Product>SysBot.Pokemon.WinForms</Product>
     <Description>Nintendo Switch Pokémon Bot Manager</Description>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>stufful_icon.ico</ApplicationIcon>
     <StartupObject>SysBot.Pokemon.WinForms.Program</StartupObject>
     <AssemblyName>StuffulBot Merge</AssemblyName>
     <LangVersion>9</LangVersion>
@@ -18,6 +18,10 @@
     <Platforms>x64</Platforms>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="stufful_icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
