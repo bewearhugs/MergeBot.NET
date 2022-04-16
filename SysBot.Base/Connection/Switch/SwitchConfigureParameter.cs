@@ -29,5 +29,10 @@
         /// Amount of time (milliseconds) to sleep between Hid keypresses
         /// </summary>
         keySleepTime,
+
+        /// <summary>
+        /// Controller type to connect - needed for LGPE support
+        /// </summary>
+        controllerType,
     }
 }

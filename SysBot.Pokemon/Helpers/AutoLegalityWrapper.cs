@@ -106,6 +106,10 @@ namespace SysBot.Pokemon
 
         public static ITrainerInfo GetTrainerInfo<T>() where T : PKM, new()
         {
+            if (typeof(T) == typeof(PK7))
+                return SaveUtil.GetBlankSAV(GameVersion.GE, "Sysbot.NET", LanguageID.English);
+            if (typeof(T) == typeof(PB7))
+                return SaveUtil.GetBlankSAV(GameVersion.GE, "Sysbot.NET", LanguageID.English);
             if (typeof(T) == typeof(PK8))
                 return TrainerSettings.GetSavedTrainerData(GameVersion.SWSH, 8);
             if (typeof(T) == typeof(PB8))

@@ -13,7 +13,7 @@ namespace SysBot.Pokemon
 
         public LanguageID GameLang { get; private set; }
         public GameVersion Version { get; private set; }
-        public string InGameName { get; private set; } = "SysBot.NET";
+        public string InGameName2 { get; private set; } = "SysBot.NET";
 
         public override string GetSummary()
         {
@@ -28,12 +28,12 @@ namespace SysBot.Pokemon
         {
             GameLang = (LanguageID)sav.Language;
             Version = sav.Version;
-            InGameName = sav.OT;
-            Connection.Label = $"{InGameName}-{sav.DisplayTID:000000}";
+            InGameName2 = sav.OT;
+            Connection.Label = $"{InGameName2}-{sav.DisplayTID:000000}";
             Log($"{Connection.Name} identified as {Connection.Label}, using {GameLang}.");
         }
 
-        protected bool IsValidTrainerData() => GameLang is (> 0 and <= LanguageID.ChineseT) && InGameName.Length > 0 && Version > 0;
+        protected bool IsValidTrainerData() => GameLang is (> 0 and <= LanguageID.ChineseT) && InGameName2.Length > 0 && Version > 0;
 
         public override void SoftStop() => Config.Pause();
 

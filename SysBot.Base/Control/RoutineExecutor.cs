@@ -49,5 +49,10 @@ namespace SysBot.Base
         public abstract Task InitialStartup(CancellationToken token);
         public abstract void SoftStop();
         public abstract Task HardStop();
+        public async Task SetController(CancellationToken token)
+        {
+            var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1);
+            await Connection.SendAsync(cmd, token).ConfigureAwait(false);
+        }
     }
 }

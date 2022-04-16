@@ -53,7 +53,14 @@ namespace SysBot.Pokemon.Twitch
                         var tq = new TwitchQueue<T>(pk, new PokeTradeTrainerInfo(display, mUserId), username, sub);
                         TwitchBot<T>.QueuePool.RemoveAll(z => z.UserName == username); // remove old requests if any
                         TwitchBot<T>.QueuePool.Add(tq);
-                        msg = $"@{username} - added to the waiting list. Please whisper your trade code to me! Your request from the waiting list will be removed if you are too slow!";
+                        if (pkm is PB7)
+                        {
+                            msg = $"@{username} - added to the waiting list. Please whisper eight 0's to me to confirm your spot in queue! *numeric codes dont work for lgpe - bot will message you code when its ur turn in queue*";
+                        }
+                        else
+                        {
+                            msg = $"@{username} - added to the waiting list. Please whisper your trade code to me! Your request from the waiting list will be removed if you are too slow!";
+                        }
                         return true;
                     }
                 }

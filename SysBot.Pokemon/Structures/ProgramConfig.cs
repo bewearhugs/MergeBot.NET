@@ -11,8 +11,9 @@ namespace SysBot.Pokemon
     public enum ProgramMode
     {
         None = 0, // invalid
-        SWSH = 1,
-        BDSP = 2,
-        LA = 3,
+        LGPE = 1,
+        SWSH = 2,
+        BDSP = 3,
+        LA = 4,
     }
 }

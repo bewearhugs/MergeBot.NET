@@ -42,7 +42,6 @@ namespace SysBot.Pokemon.WinForms
                 Config.Hub.Folder.CreateDefaults(Program.WorkingDirectory);
             }
 
-            RTB_Logs.MaxLength = 32_767; // character length
             LoadControls();
             Text = $"{Text} ({Config.Mode})";
             Task.Run(BotMonitor);
@@ -53,6 +52,7 @@ namespace SysBot.Pokemon.WinForms
 
         private static IPokeBotRunner GetRunner(ProgramConfig cfg) => cfg.Mode switch
         {
+            ProgramMode.LGPE => new PokeBotRunnerImpl<PB7>(cfg.Hub, new BotFactory7B()),
             ProgramMode.SWSH => new PokeBotRunnerImpl<PK8>(cfg.Hub, new BotFactory8()),
             ProgramMode.BDSP => new PokeBotRunnerImpl<PB8>(cfg.Hub, new BotFactory8BS()),
             ProgramMode.LA => new PokeBotRunnerImpl<PA8>(cfg.Hub, new BotFactory8LA()),
@@ -109,22 +109,14 @@ namespace SysBot.Pokemon.WinForms
                 UpdateLog(line);
         }
 
-        private readonly object _logLock = new();
-
         private void UpdateLog(string line)
         {
-            lock (_logLock)
-            {
-                // ghetto truncate
-                var rtb = RTB_Logs;
-                var text = rtb.Text;
-                var max = rtb.MaxLength;
-                if (text.Length + line.Length + 2 >= max)
-                    rtb.Text = text[(max / 4)..];
+            // ghetto truncate
+            if (RTB_Logs.Lines.Length > 99_999)
+                RTB_Logs.Lines = RTB_Logs.Lines.Skip(25_0000).ToArray();
 
-                rtb.AppendText(line);
-                rtb.ScrollToCaret();
-            }
+            RTB_Logs.AppendText(line);
+            RTB_Logs.ScrollToCaret();
         }
 
         private ProgramConfig GetCurrentConfiguration()
@@ -158,6 +150,8 @@ namespace SysBot.Pokemon.WinForms
             var cfg = GetCurrentConfiguration();
             var lines = JsonConvert.SerializeObject(cfg, GetSettings());
             File.WriteAllText(Program.ConfigPath, lines);
+            //if (TradeCordHelper<PK8>.TCInitialized)
+               // TradeCordHelper<PK8>.CleanDB();
         }
 
         private static JsonSerializerSettings GetSettings() => new()
