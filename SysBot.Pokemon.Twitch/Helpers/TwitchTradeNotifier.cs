@@ -56,27 +56,52 @@ namespace SysBot.Pokemon.Twitch
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
-            var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready. Use the code you whispered me to search!";
-            var dest = Settings.TradeStartDestination;
-            if (dest == TwitchMessageDestination.Whisper)
-                msg += $" Your trade code is: {info.Code:0000 0000}";
-            LogUtil.LogText(msg);
-            SendMessage(msg, dest);
+            if (Data is PB7)
+            {
+                var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
+                var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready.";
+                var dest = Settings.TradeStartDestination;
+                if (dest == TwitchMessageDestination.Whisper)
+                    msg += $" ";
+                LogUtil.LogText(msg);
+                SendMessage(msg, dest);
+            }
+            else
+            {
+                var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
+                var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready. Use the code you whispered me to search!";
+                var dest = Settings.TradeStartDestination;
+                if (dest == TwitchMessageDestination.Whisper)
+                    msg += $" Your trade code is: {info.Code:0000 0000}";
+                LogUtil.LogText(msg);
+                SendMessage(msg, dest);
+            }
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            var name = Info.TrainerName;
-            var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName2}.";
-            var dest = Settings.TradeSearchDestination;
-            if (dest == TwitchMessageDestination.Channel)
-                message += " Use the code you whispered me to search!";
-            else if (dest == TwitchMessageDestination.Whisper)
-                message += $" Your trade code is: {info.Code:0000 0000}";
-            LogUtil.LogText(message);
-            SendMessage($"@{info.Trainer.TrainerName} {message}", dest);
+            if (Data is PB7)
+            {
+                var name = Info.TrainerName;
+                var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
+                var message = $"I'm waiting for you{trainer}!";
+                var dest = Settings.TradeSearchDestination;
+                LogUtil.LogText(message);
+                SendMessage($"@{info.Trainer.TrainerName} {message}", dest);
+            }
+            else
+            {
+                var name = Info.TrainerName;
+                var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
+                var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName2}.";
+                var dest = Settings.TradeSearchDestination;
+                if (dest == TwitchMessageDestination.Channel)
+                    message += " Use the code you whispered me to search!";
+                else if (dest == TwitchMessageDestination.Whisper)
+                    message += $" Your trade code is: {info.Code:0000 0000}";
+                LogUtil.LogText(message);
+                SendMessage($"@{info.Trainer.TrainerName} {message}", dest);
+            }
         }
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeSummary message)

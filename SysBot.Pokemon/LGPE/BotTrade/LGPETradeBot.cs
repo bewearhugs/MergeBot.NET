@@ -23,6 +23,7 @@ namespace SysBot.Pokemon
     public class PokeTradeBotLGPE : PokeRoutineExecutor7LGPE
     {
         public bool ShouldWaitAtBarrier { get; private set; }
+        public int FailedBarrier { get; private set; }
         public static Action<List<pictocodes>>? CreateSpriteFile { get; set; }
 
         public static void generatebotsprites(List<pictocodes> code)
@@ -37,11 +38,7 @@ namespace SysBot.Pokemon
         public static SAV7b sav = new();
         public static PB7 pkm = new();
         public static PokeTradeHub<PB7>? Hub;
-        public static Queue discordname = new();
         public static Queue pictocode = new();
-        public static Queue Channel = new();
-        public static Queue discordID = new();
-        public static Queue tradepkm = new();
         public static int initialloop = 0;
         int passes = 0;
 
@@ -128,6 +125,30 @@ namespace SysBot.Pokemon
                 Hub.BotSync.Barrier.RemoveParticipant();
                 Log($"Left the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
+        }
+
+        private void WaitAtBarrierIfApplicable(CancellationToken token)
+        {
+            if (!ShouldWaitAtBarrier)
+                return;
+            var opt = Hub.Config.Distribution.SynchronizeBots;
+            if (opt == BotSyncOption.NoSync)
+                return;
+
+            var timeoutAfter = Hub.Config.Distribution.SynchronizeTimeout;
+            if (FailedBarrier == 1) // failed last iteration
+                timeoutAfter *= 2; // try to re-sync in the event things are too slow.
+
+            var result = Hub.BotSync.Barrier.SignalAndWait(TimeSpan.FromSeconds(timeoutAfter), token);
+
+            if (result)
+            {
+                FailedBarrier = 0;
+                return;
+            }
+
+            FailedBarrier++;
+            Log($"Barrier sync timed out after {timeoutAfter} seconds. Continuing.");
         }
 
         private async Task DoTrades(SAV7b sav, CancellationToken token)
@@ -247,7 +268,6 @@ namespace SysBot.Pokemon
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     while (read[0] != overworld)
                     {
-
                         await Click(B, 1000, token);
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     }
@@ -263,7 +283,6 @@ namespace SysBot.Pokemon
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == waitingtotradescreen)
                     {
-
                         await Click(A, 1000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen2)
                         {
@@ -285,11 +304,13 @@ namespace SysBot.Pokemon
                             await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                         }
-
-
                     }
                     await Task.Delay(2000);
                     Log("selecting faraway connection");
+
+
+                    //search notif
+                    poke.TradeSearching(this);
 
                     await SetStick(SwitchStick.RIGHT, 0, -30000, 0, token).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
@@ -379,10 +400,6 @@ namespace SysBot.Pokemon
                     if (nofind)
                     {
                         System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
-                        discordID.Dequeue();
-                        discordname.Dequeue();
-                        Channel.Dequeue();
-                        tradepkm.Dequeue();
                         await Click(B, 1000, token);
                         return PokeTradeResult.NoTrainerFound;
 
@@ -468,35 +485,23 @@ namespace SysBot.Pokemon
                 }
 
                 /// DISTRIBUTION TRADE
-                while (Hub.Config.Distribution.DistributeWhileIdle)
+                if (poke.Type == PokeTradeType.Random)
                 {
                     Log("Starting Trade Type: Distribution");
-
                     var dcode = new List<pictocodes>();
                     for (int i = 0; i <= 2; i++)
                     {
-
                         dcode.Add(pictocodes.Pikachu);
-
                     }
-                    //write dist pokemon (hopefully doesnt mess with specific trades
-                    var dpkm = toSend;
-                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1, token);
-                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
-
-                    System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//LGPEDistrib.txt", $"LGPE Giveaway: Shiny {(Species)pkm.Species}");
-
                     await SetController(token);
                     for (int i = 0; i < 3; i++)
                         await Click(A, 1000, token);
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     while (read[0] != overworld)
                     {
-
                         await Click(B, 1000, token);
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     }
-
                     await Click(X, 2000, token).ConfigureAwait(false);
                     Log("opening menu");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) != menuscreen)
@@ -515,7 +520,6 @@ namespace SysBot.Pokemon
                             read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                             while (read[0] != overworld)
                             {
-
                                 await Click(B, 1000, token);
                                 read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                             }
@@ -531,6 +535,9 @@ namespace SysBot.Pokemon
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                         }
                     }
+
+                    WaitAtBarrierIfApplicable(token);
+                    poke.TradeSearching(this);
                     await Task.Delay(2000);
                     Log("selecting faraway connection");
 
@@ -616,8 +623,7 @@ namespace SysBot.Pokemon
                             }
                         }
                     }
-                    if (dnofind == true)
-                        continue;
+                    if (dnofind == true)    
                     await Task.Delay(10000);
 
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)

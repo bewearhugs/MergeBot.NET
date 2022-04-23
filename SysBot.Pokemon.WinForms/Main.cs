@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Serialization;
 using SysBot.Pokemon.Z3;
+using System.Diagnostics;
 
 namespace SysBot.Pokemon.WinForms
 {
@@ -41,9 +42,8 @@ namespace SysBot.Pokemon.WinForms
                 RunningEnvironment = GetRunner(Config);
                 Config.Hub.Folder.CreateDefaults(Program.WorkingDirectory);
             }
-
-            LoadControls();
             Text = $"{Text} ({Config.Mode})";
+            LoadControls();
             Task.Run(BotMonitor);
 #if NETFRAMEWORK
             InitUtil.InitializeStubs(Config.Mode);
@@ -97,6 +97,11 @@ namespace SysBot.Pokemon.WinForms
             CB_Protocol.DataSource = listP;
             CB_Protocol.SelectedIndex = (int)SwitchProtocol.WiFi; // default option
 
+            var game = (ProgramMode[])Enum.GetValues(typeof(ProgramMode));
+            var listG =game.Select(z => new ComboItem(z.ToString(), (int)z)).ToArray();
+            Game.DisplayMember = nameof(ComboItem.Text);
+            Game.ValueMember = nameof(ComboItem.Value);
+            Game.DataSource = listG;
             LogUtil.Forwarders.Add(AppendLog);
         }
 
@@ -151,7 +156,7 @@ namespace SysBot.Pokemon.WinForms
             var lines = JsonConvert.SerializeObject(cfg, GetSettings());
             File.WriteAllText(Program.ConfigPath, lines);
             //if (TradeCordHelper<PK8>.TCInitialized)
-               // TradeCordHelper<PK8>.CleanDB();
+            // TradeCordHelper<PK8>.CleanDB();
         }
 
         private static JsonSerializerSettings GetSettings() => new()
@@ -296,7 +301,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = BotConfigUtil.GetConfig<SwitchConnectionConfig>(ip, port);
             cfg.Protocol = (SwitchProtocol)WinFormsUtil.GetIndex(CB_Protocol);
 
-            var pk = new PokeBotState {Connection = cfg};
+            var pk = new PokeBotState { Connection = cfg };
             var type = (PokeRoutineType)WinFormsUtil.GetIndex(CB_Routine);
             pk.Initialize(type);
             return pk;
@@ -312,5 +317,22 @@ namespace SysBot.Pokemon.WinForms
         {
             TB_IP.Visible = CB_Protocol.SelectedIndex == 0;
         }
+
+        private void GameMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //The Current mode = What we selected in form
+            Config.Mode = (ProgramMode)Game.SelectedIndex;
+            //Save that to config
+            SaveCurrentConfig();
+
+            //Auto Reload?
+            var result = MessageBox.Show("Restart to load game change?\n*Select 'No' if just opened or reset*", "Reset Application?",
+    MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (result == DialogResult.Yes)
+            {
+                Application.Restart();
+            }
+        }
+    
     }
 }

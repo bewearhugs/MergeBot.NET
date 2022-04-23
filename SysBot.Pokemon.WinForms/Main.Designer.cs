@@ -49,6 +49,7 @@ namespace SysBot.Pokemon.WinForms
             this.label4 = new System.Windows.Forms.Label();
             this.B_Stop = new System.Windows.Forms.Button();
             this.B_Start = new System.Windows.Forms.Button();
+            this.Game = new System.Windows.Forms.ComboBox();
             this.TC_Main.SuspendLayout();
             this.Tab_Bots.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_Port)).BeginInit();
@@ -72,6 +73,7 @@ namespace SysBot.Pokemon.WinForms
             // 
             // Tab_Bots
             // 
+            this.Tab_Bots.Controls.Add(this.Game);
             this.Tab_Bots.Controls.Add(this.CB_Protocol);
             this.Tab_Bots.Controls.Add(this.FLP_Bots);
             this.Tab_Bots.Controls.Add(this.TB_IP);
@@ -93,7 +95,7 @@ namespace SysBot.Pokemon.WinForms
             this.CB_Protocol.FormattingEnabled = true;
             this.CB_Protocol.Location = new System.Drawing.Point(248, 5);
             this.CB_Protocol.Name = "CB_Protocol";
-            this.CB_Protocol.Size = new System.Drawing.Size(58, 21);
+            this.CB_Protocol.Size = new System.Drawing.Size(44, 21);
             this.CB_Protocol.TabIndex = 10;
             this.CB_Protocol.SelectedIndexChanged += new System.EventHandler(this.CB_Protocol_SelectedIndexChanged);
             // 
@@ -128,9 +130,9 @@ namespace SysBot.Pokemon.WinForms
             this.CB_Routine.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CB_Routine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(221)))), ((int)(((byte)(100)))));
             this.CB_Routine.FormattingEnabled = true;
-            this.CB_Routine.Location = new System.Drawing.Point(312, 5);
+            this.CB_Routine.Location = new System.Drawing.Point(298, 5);
             this.CB_Routine.Name = "CB_Routine";
-            this.CB_Routine.Size = new System.Drawing.Size(101, 21);
+            this.CB_Routine.Size = new System.Drawing.Size(84, 21);
             this.CB_Routine.TabIndex = 7;
             // 
             // NUD_Port
@@ -302,6 +304,18 @@ namespace SysBot.Pokemon.WinForms
             this.B_Start.UseVisualStyleBackColor = false;
             this.B_Start.Click += new System.EventHandler(this.B_Start_Click);
             // 
+            // Game
+            // 
+            this.Game.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.Game.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Game.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(221)))), ((int)(((byte)(100)))));
+            this.Game.FormattingEnabled = true;
+            this.Game.Location = new System.Drawing.Point(388, 5);
+            this.Game.Name = "Game";
+            this.Game.Size = new System.Drawing.Size(44, 21);
+            this.Game.TabIndex = 11;
+            this.Game.SelectedIndexChanged += new System.EventHandler(this.GameMode_SelectedIndexChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -349,6 +363,7 @@ namespace SysBot.Pokemon.WinForms
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox Game;
     }
 }
 

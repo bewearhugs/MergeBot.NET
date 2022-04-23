@@ -25,15 +25,32 @@ namespace SysBot.Pokemon.Discord
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
-            Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code is **{Code:0000 0000}**.").ConfigureAwait(false);
+            if (Data is PB7)
+            {
+                var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
+                Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code is...").ConfigureAwait(false);
+            }
+            else 
+            {
+                var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
+                Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code is **{Code:0000 0000}**.").ConfigureAwait(false);
+            }
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            var name = Info.TrainerName;
-            var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", {name}";
-            Trader.SendMessageAsync($"I'm waiting for you{trainer}! Your code is **{Code:0000 0000}**. My IGN is **{routine.InGameName2}**.").ConfigureAwait(false);
+            if (Data is PB7)
+            {
+                var name = Info.TrainerName;
+                var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", {name}";
+                Trader.SendMessageAsync($"I'm waiting for you{trainer}!").ConfigureAwait(false);
+            }
+            else
+            {
+                var name = Info.TrainerName;
+                var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", {name}";
+                Trader.SendMessageAsync($"I'm waiting for you{trainer}! Your code is **{Code:0000 0000}**. My IGN is **{routine.InGameName2}**.").ConfigureAwait(false);
+            }
         }
 
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
