@@ -19,10 +19,16 @@ StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Ga
 * -[SysBot Base](https://github.com/olliz0r/sys-botbase)
 * -[ldn_mitm](https://github.com/spacemeowx2/ldn_mitm) *if using SWSH*
 
+** Game Mode Changer (NEW!!!)
+![GameMode](https://media.discordapp.net/attachments/861058349621444648/967503425543745566/unknown.png)
+![FormPreview](https://media.discordapp.net/attachments/861058349621444648/967508653487849472/unknown.png)
+* Select No to Boot, Select yes to restart - only restart if you changed the selection in dropdown menu for game mode change!
+
+
 ## How to Run
 1. Boot your Switch (assuming you are in Sys CFW mode)
 2. Start the game of your choice
-3. Edit your config for game mode and reboot exe if neccessary...  Mode:  1=LGPE 2=SWSH 3=BDSP 4=LA
+3. Edit your config for game mode and reboot exe if neccessary...  Mode:  0=LGPE 1=SWSH 2=BDSP 3=LA
 5. Edit Hub, Add Bot, and hit Start All
 
 ## How to build
