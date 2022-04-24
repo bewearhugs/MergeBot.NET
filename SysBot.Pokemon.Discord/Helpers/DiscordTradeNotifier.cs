@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using PKHeX.Core;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace SysBot.Pokemon.Discord
@@ -73,6 +74,23 @@ namespace SysBot.Pokemon.Discord
         {
             Trader.SendMessageAsync(message).ConfigureAwait(false);
         }
+
+
+        public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, object file)
+        {
+            var filename = Path.GetFileName($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
+
+            var emb = new EmbedBuilder()
+                    .WithColor(0xFDFD96)
+                    .WithTimestamp(DateTime.Now)
+                    .WithTitle("Pictocode")
+                    .WithImageUrl($"attachment://{filename}")
+                    .Build();
+            //Trader.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", null, false, emb).ConfigureAwait(false);
+            Trader.SendFileAsync(filename, null, false, emb).ConfigureAwait(false);
+        }
+
+
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeSummary message)
         {

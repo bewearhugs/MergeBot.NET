@@ -132,5 +132,10 @@ namespace SysBot.Pokemon.Twitch
                     break;
             }
         }
+
+        public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, object file)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

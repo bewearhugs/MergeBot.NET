@@ -32,7 +32,7 @@ namespace SysBot.Pokemon.Discord
                 // Notify in PM to mirror what is said in the channel.
                 if (trade is PB7)
                 {
-                    await trader.SendMessageAsync($"{msg}\nYour trade code will be...").ConfigureAwait(false);
+                    //if PB7 dont do anything, code is built into LGPE trade routine
                 }
                 else
                 {

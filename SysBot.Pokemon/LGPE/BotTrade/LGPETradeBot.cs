@@ -252,7 +252,10 @@ namespace SysBot.Pokemon
                     //code notifier will go here once i figure it out
                     try
                     {
+                        await Task.Delay(3000);
                         poke.SendNotification(this, codetext);
+                        await Task.Delay(1000);
+                        poke.SendNotification2(this, finalpic);
                     }
                     catch (Exception ex)
                     {
