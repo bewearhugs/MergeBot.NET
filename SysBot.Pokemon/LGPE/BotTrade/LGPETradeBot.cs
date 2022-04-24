@@ -318,6 +318,8 @@ namespace SysBot.Pokemon
 
                     await Click(A, 1000, token).ConfigureAwait(false);
 
+                    Hub.Config.Stream.StartEnterCode(this);
+
                     Log("Entering Link Code");
                     foreach (pictocodes pc in code)
                     {
@@ -399,7 +401,7 @@ namespace SysBot.Pokemon
                     }
                     if (nofind)
                     {
-                        System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
+                        Hub.Config.Stream.StartEnterCode(this);
                         await Click(B, 1000, token);
                         return PokeTradeResult.NoTrainerFound;
 
@@ -409,7 +411,7 @@ namespace SysBot.Pokemon
                     Log("User Found");
                     await Task.Delay(10000);
 
-                    System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
+                    Hub.Config.Stream.StartEnterCode(this);
 
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
