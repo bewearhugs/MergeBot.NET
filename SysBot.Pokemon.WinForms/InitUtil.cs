@@ -48,7 +48,7 @@ namespace SysBot.Pokemon.WinForms
                     var showdown = new ShowdownSet(cd.ToString());
                     PKM pk = PokeTradeBotLGPE.sav.GetLegalFromSet(showdown, out _);
                     Image png = SpriteUtil.GetSprite(pk.Species, 0, 0, 0, 0, false, false, -1, true);
-                    png = ResizeImage(png, 127, 120);
+                    png = ResizeImage(png, 137, 130);
                     png.Save($"{System.IO.Directory.GetCurrentDirectory()}//code{codecount}.png");
                     codecount++;
                 }
@@ -57,7 +57,7 @@ namespace SysBot.Pokemon.WinForms
 
         public static Bitmap ResizeImage(Image image, int width, int height)
         {
-            var destRect = new Rectangle(0, 0, width, height);
+            var destRect = new Rectangle(-40, -65, width, height);
             var destImage = new Bitmap(width, height);
 
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
@@ -66,14 +66,14 @@ namespace SysBot.Pokemon.WinForms
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
                 using (var wrapMode = new ImageAttributes())
                 {
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
                 }
             }
             return destImage;
