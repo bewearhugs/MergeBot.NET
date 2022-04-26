@@ -487,7 +487,6 @@ namespace SysBot.Pokemon
                         passes++;
                     }
                     btimeout.Restart();
-                    int acount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     passes = 0;
@@ -638,7 +637,7 @@ namespace SysBot.Pokemon
                         await Task.Delay(Hub.Config.Trade.TradeWaitTime);
 
 
-                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime+5000))
+                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime + 5000))
                         {
                             Log("User not found");
                             dnofind = true;
@@ -653,89 +652,92 @@ namespace SysBot.Pokemon
                     if (dnofind == true)
                     {
                         poke.TradeCanceled(this, PokeTradeResult.TrainerTooSlow);
-                    }
-
-                    await Task.Delay(10000);
-
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
-                    {
-                        await Click(A, 1000, token);
-                    }
-                    Log("waiting on trade screen");
-
-                    await Task.Delay(15_000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    Log("Distribution trading...");
-                    await Task.Delay(15_000);
-
-                    while (await LGIsInTrade(token))
-                        await Click(A, 1000, token);
-
-                    ///assume trade success and dump recieved file
-                    var received = await LGReadPokemon(BoxSlot1, token);
-                    if (received == toSend)
-                    {
-                        LogUtil.LogText("Trade likely failed");
+                        return PokeTradeResult.NoTrainerFound;
                     }
                     else
                     {
-                        UpdateCountsAndExport(poke, received, toSend);
-                    }
+                        await Task.Delay(10000);
 
-                    Log("Trade should be completed, exiting box");
-                    passes = 0;
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
-                    {
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-                        await Click(B, 1000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-                        await Click(A, 1000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-                        await Click(B, 1000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-                        await Click(B, 1000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-
-                        if (passes == 30)
+                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                         {
-                            for (int i = 0; i < 7; i++)
-                            {
-                                await Click(A, 1000, token);
-                            }
+                            await Click(A, 1000, token);
                         }
-                        passes++;
-                    }
+                        Log("waiting on trade screen");
 
-                    btimeout.Restart();
-                    Log("spamming b to get back to overworld");
-                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    passes = 0;
-                    while (read[0] != overworld)
-                    {
-                        await Click(B, 1000, token);
+                        await Task.Delay(15_000);
+                        await Click(A, 200, token).ConfigureAwait(false);
+                        Log("Distribution trading...");
+                        await Task.Delay(15_000);
+
+                        while (await LGIsInTrade(token))
+                            await Click(A, 1000, token);
+
+                        ///assume trade success and dump recieved file
+                        var received = await LGReadPokemon(BoxSlot1, token);
+                        if (received == toSend)
+                        {
+                            LogUtil.LogText("Trade likely failed");
+                        }
+                        else
+                        {
+                            UpdateCountsAndExport(poke, received, toSend);
+                        }
+
+                        Log("Trade should be completed, exiting box");
+                        passes = 0;
+                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
+                        {
+                            if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                                break;
+                            await Click(B, 1000, token);
+                            if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                                break;
+                            await Click(A, 1000, token);
+                            if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                                break;
+                            await Click(B, 1000, token);
+                            if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                                break;
+                            await Click(B, 1000, token);
+                            if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                                break;
+
+                            if (passes == 30)
+                            {
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    await Click(A, 1000, token);
+                                }
+                            }
+                            passes++;
+                        }
+
+                        btimeout.Restart();
+                        Log("spamming b to get back to overworld");
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        if (passes == 30)
+                        passes = 0;
+                        while (read[0] != overworld)
                         {
-                            for (int i = 0; i < 7; i++)
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                            if (passes == 30)
                             {
-                                await Click(A, 1000, token);
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    await Click(A, 1000, token);
+                                }
                             }
+                            passes++;
                         }
-                        passes++;
+                        await Click(B, 1000, token);
+                        await Click(B, 1000, token);
+                        Log("done spamming b");
+                        await Task.Delay(2500);
+                        initialloop++;
+                        return PokeTradeResult.Success;
                     }
-                    await Click(B, 1000, token);
-                    await Click(B, 1000, token);
-                    Log("done spamming b");
-                    await Task.Delay(2500);
-                    initialloop++;
-                    return PokeTradeResult.Success;
                 }
-                if (toSend.Species == 0)
+                    if (toSend.Species == 0)
                 {
                     Log("No Valid Poke detected");
                 }
