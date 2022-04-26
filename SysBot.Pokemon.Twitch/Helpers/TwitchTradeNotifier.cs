@@ -54,6 +54,15 @@ namespace SysBot.Pokemon.Twitch
             SendMessage(message, Settings.TradeFinishDestination);
         }
 
+        public void TradeFinished2(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
+        {
+            OnFinish?.Invoke(routine);
+            var tradedToUser = Data.Species;
+            var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0 ? $"Trade finished. Enjoy your {(Species)tradedToUser}!" : "Trade finished!");
+            LogUtil.LogText(message);
+            SendMessage(message, Settings.TradeFinishDestination);
+        }
+
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             if (Data is PB7)
@@ -80,7 +89,7 @@ namespace SysBot.Pokemon.Twitch
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            if (Data is PB7)
+            if (routine is PB7)
             {
                 var name = Info.TrainerName;
                 var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
@@ -116,6 +125,13 @@ namespace SysBot.Pokemon.Twitch
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
             var msg = $"Details for {result.FileName}: " + message;
+            LogUtil.LogText(msg);
+            SendMessage(msg, Settings.NotifyDestination);
+        }
+
+        public void SendNotification(string message)
+        {
+            var msg = $" " + message;
             LogUtil.LogText(msg);
             SendMessage(msg, Settings.NotifyDestination);
         }

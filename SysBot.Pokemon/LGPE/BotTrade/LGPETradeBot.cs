@@ -730,9 +730,9 @@ namespace SysBot.Pokemon
                 throw new ArgumentNullException("thirdImage");
             }
 
-            int outputImageWidth = firstImage.Width + secondImage.Width + thirdImage.Width + 2;
+            int outputImageWidth = firstImage.Width +20;
 
-            int outputImageHeight = firstImage.Height;
+            int outputImageHeight = firstImage.Height -65;
 
             Bitmap outputImage = new Bitmap(outputImageWidth, outputImageHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
