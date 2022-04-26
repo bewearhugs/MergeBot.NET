@@ -406,12 +406,13 @@ namespace SysBot.Pokemon
                     var nofind = false;
                     while (await LGIsinwaitingScreen(token))
                     {
-                        await Task.Delay(Hub.Config.Trade.TradeWaitTime);
+                        await Task.Delay(Hub.Config.Trade.TradeWaitTime * 1_000);
 
-                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime+5000))
+                        //if time spent searching is greater then the hub time + 10 seconds then assume user not found and back out
+                        //recommended wait time is 45 seconds for LGPE - give or take depending on network speeds etc.
+                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime * 1_000 + 10_000))
                         {
                             await Click(B, 1000, token);
-                            Log("User not found");
                             nofind = true;
                             read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                             while (read[0] != overworld)
@@ -427,8 +428,9 @@ namespace SysBot.Pokemon
                     }
                     if (nofind)
                     {
-                        Hub.Config.Stream.StartEnterCode(this);
+                        Hub.Config.Stream.EndEnterCode(this);
                         await Click(B, 1000, token);
+                        Log("User not found");
                         return PokeTradeResult.NoTrainerFound;
 
                     }
@@ -437,7 +439,7 @@ namespace SysBot.Pokemon
                     Log("User Found");
                     await Task.Delay(10000);
 
-                    Hub.Config.Stream.StartEnterCode(this);
+                    Hub.Config.Stream.EndEnterCode(this);
 
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
@@ -634,10 +636,12 @@ namespace SysBot.Pokemon
                     var dnofind = false;
                     while (await LGIsinwaitingScreen(token))
                     {
-                        await Task.Delay(Hub.Config.Trade.TradeWaitTime);
+                        await Task.Delay(Hub.Config.Trade.TradeWaitTime * 1_000);
 
+                        //if time spent searching is greater then the hub time + 10 seconds then assume user not found and back out
+                        //recommended wait time is 45 seconds for LGPE - give or take depending on network speeds etc.
 
-                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime + 5000))
+                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime * 1_000 + 10_000))
                         {
                             Log("User not found");
                             dnofind = true;
@@ -651,6 +655,7 @@ namespace SysBot.Pokemon
                     }
                     if (dnofind == true)
                     {
+                        Log("Distribution Failed - Moving to next...");
                         poke.TradeCanceled(this, PokeTradeResult.TrainerTooSlow);
                         return PokeTradeResult.NoTrainerFound;
                     }
