@@ -37,6 +37,12 @@ namespace SysBot.Pokemon.Twitch
             SendMessage($"@{info.Trainer.TrainerName}: {message}", Settings.NotifyDestination);
         }
 
+        public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, object file)
+        {
+            LogUtil.LogText(file.ToString());
+            SendMessage($"@{info.Trainer.TrainerName}: {file}", Settings.NotifyDestination);
+        }
+
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
@@ -129,9 +135,9 @@ namespace SysBot.Pokemon.Twitch
             SendMessage(msg, Settings.NotifyDestination);
         }
 
-        public void SendNotification(string message)
+        public void SendNotification(PokeRoutineExecutor<T> routine, string message)
         {
-            var msg = $" " + message;
+            var msg = $"{routine}" + message;
             LogUtil.LogText(msg);
             SendMessage(msg, Settings.NotifyDestination);
         }
@@ -147,11 +153,6 @@ namespace SysBot.Pokemon.Twitch
                     Client.SendWhisper(Username, message);
                     break;
             }
-        }
-
-        public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, object file)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace SysBot.Pokemon
 
     public class PokeTradeBotLGPE : PokeRoutineExecutor7LGPE
     {
+        private readonly IDumper DumpSetting;
         public bool ShouldWaitAtBarrier { get; private set; }
         public int FailedBarrier { get; private set; }
         public static Action<List<pictocodes>>? CreateSpriteFile { get; set; }
@@ -44,9 +45,9 @@ namespace SysBot.Pokemon
 
         public PokeTradeBotLGPE(PokeTradeHub<PB7> hub, PokeBotState cfg) : base(cfg)
         {
-
             Hub = hub;
             TradeSettings = hub.Config.Trade;
+            DumpSetting = hub.Config.Folder;
         }
 
         protected virtual (PokeTradeDetail<PB7>? detail, uint priority) GetTradeData(PokeRoutineType type)
@@ -83,8 +84,22 @@ namespace SysBot.Pokemon
 
         }
 
-        private const int InjectBox = 0;
-        private const int InjectSlot = 0;
+        private void UpdateCountsAndExport(PokeTradeDetail<PB7> poke, PB7 received, PB7 toSend)
+        {
+            var counts = TradeSettings;
+            if (poke.Type == PokeTradeType.Random)
+                counts.AddCompletedDistribution();
+            else
+                counts.AddCompletedTrade();
+
+            if (DumpSetting.Dump && !string.IsNullOrEmpty(DumpSetting.DumpFolder))
+            {
+                var subfolder = poke.Type.ToString().ToLower();
+                DumpPokemon(DumpSetting.DumpFolder, subfolder, received); // received by bot
+                if (poke.Type is PokeTradeType.Specific)
+                    DumpPokemon(DumpSetting.DumpFolder, "traded", toSend); // sent to partner
+            }
+        }
 
         public async Task DoNothing(CancellationToken token)
         {
@@ -253,11 +268,18 @@ namespace SysBot.Pokemon
                     try
                     {
                         await Task.Delay(3000);
-                        poke.SendNotification(this, codetext);
+                        poke.SendNotification(this, codetext );
                         await Task.Delay(1000);
-                        poke.SendNotification2(this, finalpic);
+                        try
+                        {
+                            poke.SendNotification2(this, finalpic);
+                        }
+                        catch
+                        {
+                            Log("No pictocode sent to twitch as intended");
+                        }
                     }
-                    catch (Exception ex)
+                        catch (Exception ex)
                     {
                         Log($"{ex}");
                     }
@@ -384,8 +406,9 @@ namespace SysBot.Pokemon
                     var nofind = false;
                     while (await LGIsinwaitingScreen(token))
                     {
-                        await Task.Delay(100);
-                        if (btimeout.ElapsedMilliseconds >= 45_000)
+                        await Task.Delay(Hub.Config.Trade.TradeWaitTime);
+
+                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime+5000))
                         {
                             await Click(B, 1000, token);
                             Log("User not found");
@@ -431,8 +454,9 @@ namespace SysBot.Pokemon
 
                     ///assume trade success send file thing
 
-                    var returnpk = await LGReadPokemon(BoxSlot1, token);
-                    poke.TradeFinished(this, returnpk);
+                    var received = await LGReadPokemon(BoxSlot1, token);
+                    poke.TradeFinished(this, received);
+                    UpdateCountsAndExport(poke, received, toSend);
 
                     Log("Trade should be completed, exiting box");
                     passes = 0;
@@ -544,13 +568,11 @@ namespace SysBot.Pokemon
                     WaitAtBarrierIfApplicable(token);
                     poke.TradeSearching(this);
                     await Task.Delay(2000);
+
                     Log("selecting faraway connection");
-
-
                     await SetStick(SwitchStick.RIGHT, 0, -30000, 0, token).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     await Click(A, 10000, token).ConfigureAwait(false);
-
                     await Click(A, 1000, token).ConfigureAwait(false);
 
                     Log("Entering distribution Link Code");
@@ -609,15 +631,15 @@ namespace SysBot.Pokemon
                     }
 
                     Log("Searching for distribution user");
-
                     btimeout.Restart();
                     var dnofind = false;
                     while (await LGIsinwaitingScreen(token))
                     {
-                        await Task.Delay(100);
-                        if (btimeout.ElapsedMilliseconds >= 45_000)
-                        {
+                        await Task.Delay(Hub.Config.Trade.TradeWaitTime);
 
+
+                        if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime+5000))
+                        {
                             Log("User not found");
                             dnofind = true;
                             read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
@@ -628,7 +650,11 @@ namespace SysBot.Pokemon
                             }
                         }
                     }
-                    if (dnofind == true)    
+                    if (dnofind == true)
+                    {
+                        poke.TradeCanceled(this, PokeTradeResult.TrainerTooSlow);
+                    }
+
                     await Task.Delay(10000);
 
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
@@ -637,16 +663,24 @@ namespace SysBot.Pokemon
                     }
                     Log("waiting on trade screen");
 
-
-
                     await Task.Delay(15_000);
                     await Click(A, 200, token).ConfigureAwait(false);
                     Log("Distribution trading...");
-                    await Task.Delay(15000);
+                    await Task.Delay(15_000);
 
                     while (await LGIsInTrade(token))
                         await Click(A, 1000, token);
 
+                    ///assume trade success and dump recieved file
+                    var received = await LGReadPokemon(BoxSlot1, token);
+                    if (received == toSend)
+                    {
+                        LogUtil.LogText("Trade likely failed");
+                    }
+                    else
+                    {
+                        UpdateCountsAndExport(poke, received, toSend);
+                    }
 
                     Log("Trade should be completed, exiting box");
                     passes = 0;
@@ -678,7 +712,6 @@ namespace SysBot.Pokemon
                     }
 
                     btimeout.Restart();
-                    int dacount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     passes = 0;
@@ -694,7 +727,6 @@ namespace SysBot.Pokemon
                             }
                         }
                         passes++;
-
                     }
                     await Click(B, 1000, token);
                     await Click(B, 1000, token);
@@ -703,12 +735,10 @@ namespace SysBot.Pokemon
                     initialloop++;
                     return PokeTradeResult.Success;
                 }
-
                 if (toSend.Species == 0)
                 {
                     Log("No Valid Poke detected");
                 }
-                
             }
             return PokeTradeResult.NoTrainerFound;
         }
