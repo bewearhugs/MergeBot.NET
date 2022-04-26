@@ -24,8 +24,9 @@ StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Ga
 ![FormPreview](https://media.discordapp.net/attachments/861058349621444648/967508653487849472/unknown.png)
 * Select No to Boot, Select yes to restart - only restart if you changed the selection in dropdown menu for game mode change!
 
-![pictoocde](https://media.discordapp.net/attachments/861058349621444648/967847197553066085/unknown.png)
+![pictoocde](https://media.discordapp.net/attachments/861058349621444648/968384357821722634/reeee.png)
 - Now with a pretty embed ooohhhh ahhhhhh
+- Pictocode quality improved and edges trimmed... so pretty!
 
 
 ## How to Run
