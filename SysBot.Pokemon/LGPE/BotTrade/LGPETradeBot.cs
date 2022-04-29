@@ -261,15 +261,13 @@ namespace SysBot.Pokemon
                     var code2 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code2.png");
                     var finalpic = Merge(code0, code1, code2);
                     finalpic.Save($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
-
                     string codetext = $"**{code[0]}, {code[1]}, {code[2]}**";
+                    System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//codetext.txt", $"{codetext}");
+
 
                     //code notifier will go here once i figure it out
                     try
                     {
-                        await Task.Delay(3000);
-                        poke.SendNotification(this, codetext );
-                        await Task.Delay(1000);
                         try
                         {
                             poke.SendNotification2(this, finalpic);
@@ -407,7 +405,6 @@ namespace SysBot.Pokemon
                     while (await LGIsinwaitingScreen(token))
                     {
                         await Task.Delay(Hub.Config.Trade.TradeWaitTime * 1_000);
-
                         //if time spent searching is greater then the hub time + 10 seconds then assume user not found and back out
                         //recommended wait time is 45 seconds for LGPE - give or take depending on network speeds etc.
                         if (btimeout.ElapsedMilliseconds >= (Hub.Config.Trade.TradeWaitTime * 1_000 + 10_000))
@@ -454,11 +451,28 @@ namespace SysBot.Pokemon
                     while (await LGIsInTrade(token))
                         await Click(A, 1000, token);
 
-                    ///assume trade success send file thing
+                    //Specific trade success send file thing
 
-                    var received = await LGReadPokemon(BoxSlot1, token);
-                    poke.TradeFinished(this, received);
-                    UpdateCountsAndExport(poke, received, toSend);
+                    var returnpk = await LGReadPokemon(BoxSlot1, token);
+                    if (returnpk == null)
+                    {
+                        returnpk = new PB7();
+                    }
+                    if (SearchUtil.HashByDetails(returnpk) != SearchUtil.HashByDetails(toSend))
+                    {
+                        byte[] writepoke = returnpk.EncryptedBoxData;
+                        var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
+                        tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
+                        System.IO.File.WriteAllBytes(tpfile, writepoke);
+                        System.IO.File.Delete(tpfile);
+                        //   Log($"{tradepartnersav.OT} completed their trade!");
+                        UpdateCountsAndExport(poke, returnpk, toSend);
+                        poke.TradeFinished(this, toSend);
+                    }
+                    else
+                    {
+                        Log($"User did not complete their trade - Trade failed, moving to next.");
+                    }
 
                     Log("Trade should be completed, exiting box");
                     passes = 0;
@@ -677,15 +691,26 @@ namespace SysBot.Pokemon
                         while (await LGIsInTrade(token))
                             await Click(A, 1000, token);
 
-                        ///assume trade success and dump recieved file
-                        var received = await LGReadPokemon(BoxSlot1, token);
-                        if (received == toSend)
+                        //distribution trade success dumper
+
+                        var returnpk = await LGReadPokemon(BoxSlot1, token);
+                        if (returnpk == null)
                         {
-                            LogUtil.LogText("Trade likely failed");
+                            returnpk = new PB7();
+                        }
+                        if (SearchUtil.HashByDetails(returnpk) != SearchUtil.HashByDetails(toSend))
+                        {
+                            byte[] writepoke = returnpk.EncryptedBoxData;
+                            var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
+                            tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
+                            System.IO.File.WriteAllBytes(tpfile, writepoke);
+                            System.IO.File.Delete(tpfile);
+                            //   Log($"{tradepartnersav.OT} completed their trade!");
+                            UpdateCountsAndExport(poke, returnpk, toSend);
                         }
                         else
                         {
-                            UpdateCountsAndExport(poke, received, toSend);
+                            Log("User did not complete their trade - Distribution Failed, moving to next.");
                         }
 
                         Log("Trade should be completed, exiting box");

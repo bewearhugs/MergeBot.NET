@@ -79,11 +79,11 @@ namespace SysBot.Pokemon.Discord
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, object file)
         {
             var filename = Path.GetFileName($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
-
+            var codetext = System.IO.File.ReadAllText($"{System.IO.Directory.GetCurrentDirectory()}//codetext.txt");
             var emb = new EmbedBuilder()
                     .WithColor(0xFDFD96)
                     .WithTimestamp(DateTime.Now)
-                    .WithTitle("Pictocode")
+                    .WithTitle($"{codetext}")
                     .WithImageUrl($"attachment://{filename}")
                     .Build();
             //Trader.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", null, false, emb).ConfigureAwait(false);
