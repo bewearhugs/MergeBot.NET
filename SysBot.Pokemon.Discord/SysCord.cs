@@ -289,6 +289,9 @@ namespace SysBot.Pokemon.Discord
             if (MessageChannelsLoaded)
                 return;
 
+            // Restore Announcement Channels
+            AnnounceModule.RestoreAnnounce(_client, Hub.Config.Discord);
+
             // Restore Echoes
             EchoModule.RestoreChannels(_client, Hub.Config.Discord);
 

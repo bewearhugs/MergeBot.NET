@@ -19,6 +19,9 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("Bot command prefix.")]
         public string CommandPrefix { get; set; } = "$";
 
+        [Category(Channels), Description("Channels with these IDs are the only channels where the bot will send announcement and channel name changes")]
+        public RemoteControlAccessList ChannelAnnouncelist { get; set; } = new();
+
         [Category(Startup), Description("List of modules that will not be loaded when the bot is started (comma separated).")]
         public string ModuleBlacklist { get; set; } = string.Empty;
 
