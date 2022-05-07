@@ -28,6 +28,17 @@ StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Ga
 - Now with a pretty embed ooohhhh ahhhhhh
 - Pictocode quality improved and edges trimmed... so pretty!
 
+## 6A Helper Module (Owner usage only)
+* AnnounceHere / AH / ah - adds the channel the command is used in to the channel announce/changer list
+* Announce / A / a - sends an embedded announcement for provided string message to all linked channels (use "" to wrap multiple words into one 'string')
+* Change / CH / ch - changes the name of all the linked channels in announcelist to match provided string (use "" to wrap multiple words into one 'string')
+* Off / off - changes the name of all the linked channels in announcelist to $"{bot.username} offline❌"
+* On / on - changes the name of all the linked channels in announcelist to $"{bot.username} 'providedstring'✅"
+examples:
+&Announce "Bot is taking a break for a bit"
+&Change "Bot Channel Name Example"
+&Off (All linked channels will be renamed to = {bot.username} offline❌)
+&On lgpe (All linked channels will be renamed to = {bot.username} lgpe✅)
 
 ## How to Run
 1. Boot your Switch (assuming you are in Sys CFW mode)
