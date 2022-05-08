@@ -35,6 +35,7 @@ StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Ga
 * Off / off - changes the name of all the linked channels in announcelist to $"{bot.username} offline❌"
 * On / on - changes the name of all the linked channels in announcelist to $"{bot.username} 'providedstring'✅"
 * Yeet / yeet - leaves the server the command is executed in
+
 examples:
 &Announce "Bot is taking a break for a bit"
 &Change "Bot Channel Name Example"
