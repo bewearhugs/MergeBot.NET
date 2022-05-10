@@ -1,20 +1,6 @@
 ﻿using System.ComponentModel;
-using PKHeX.Core;
-using PKHeX.Core.Searching;
-using SysBot.Base;
 using System;
-using System.Drawing;
-using System.Linq;
-using PKHeX.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using static SysBot.Base.SwitchButton;
-using static SysBot.Pokemon.PokeDataOffsets;
-using System.Collections;
 using System.Collections.Generic;
-using Discord;
-using System.Diagnostics;
 
 
 namespace SysBot.Pokemon

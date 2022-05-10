@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Discord
             if (Data is PB7)
             {
                 var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
-                Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code is...").ConfigureAwait(false);
+                Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code will be sent when I reach your spot in queue").ConfigureAwait(false);
             }
             else 
             {

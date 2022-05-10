@@ -13,7 +13,6 @@ using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.PokeDataOffsetsLGPE;
 using System.Collections;
 using System.Collections.Generic;
-using Discord;
 using System.Diagnostics;
 using System.Net.Sockets;
 
