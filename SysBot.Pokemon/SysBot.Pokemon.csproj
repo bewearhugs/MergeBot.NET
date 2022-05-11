@@ -12,10 +12,6 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="deps\" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="PKHeX.Core.AutoMod">
       <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
@@ -23,6 +19,11 @@
     <Reference Include="PKHeX.Drawing">
       <HintPath>LGPE\BotTrade\PKHeX.Drawing.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="deps\PKHeX.Core.AutoMod.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

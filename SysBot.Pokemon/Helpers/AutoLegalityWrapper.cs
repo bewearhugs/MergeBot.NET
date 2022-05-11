@@ -70,10 +70,10 @@ namespace SysBot.Pokemon
             }
 
             var trainer = TrainerSettings.GetSavedTrainerData(PKX.Generation);
-            RecentTrainerCache.SetRecentTrainer(trainer);
+            PKHeX.Core.AutoMod.TrainerSettings.GetSavedTrainerData(trainer.GetTrainerIDFormat());
         }
 
-        private static void InitializeCoreStrings()
+            private static void InitializeCoreStrings()
         {
             var lang = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName[..2];
             LocalizationUtil.SetLocalization(typeof(LegalityCheckStrings), lang);
@@ -107,7 +107,7 @@ namespace SysBot.Pokemon
         public static ITrainerInfo GetTrainerInfo<T>() where T : PKM, new()
         {
             if (typeof(T) == typeof(PK7))
-                return SaveUtil.GetBlankSAV(GameVersion.GE, "Sysbot.NET", LanguageID.English);
+                return TrainerSettings.GetSavedTrainerData(GameVersion.USUM, 7);
             if (typeof(T) == typeof(PB7))
                 return SaveUtil.GetBlankSAV(GameVersion.GE, "Sysbot.NET", LanguageID.English);
             if (typeof(T) == typeof(PK8))
