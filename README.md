@@ -7,7 +7,7 @@
 * [Bewearhug's discord](https://tiny.cc/bwhd)
 
 ## Now with a Wiki!
-
+* -[StuffulBot Merge Wiki](https://github.com/bewearhugs/StuffulBot-MergeBot.NET/wiki)
 ## About
 StuffulBot Merge is a Generation 7/8 Sysbot for LGPE, SWSH, BDSP, LA Pokémon Games
 
