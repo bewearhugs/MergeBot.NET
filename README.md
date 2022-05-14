@@ -1,4 +1,3 @@
-![Stufful](https://cdn.discordapp.com/attachments/733453918498979944/964983965452738620/stufful.gif)
 # StuffulBot Merge is a Gen 7/8 Sysbot for Nintendo Switch
 
 **LGPE Sysbot done by SantaCrab420 - Merged by bewearhugs**
